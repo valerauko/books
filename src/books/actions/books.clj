@@ -1,15 +1,24 @@
 (ns books.actions.books
-  (:require [books.mongo :refer [conn]]
-            [somnium.congomongo :refer :all]))
+  (:require [books.models.book :as book]
+            [books.views.books :as view]
+            [books.view :refer [render]]))
 
 (defn index
   "Top page"
-  ([]
-    {:status 302 :headers {"Location" "/"} :body "Please log in."})
-  ([user]
-    (let [result (with-mongo conn (insert! :test {:hello "world"}))
-          total (with-mongo conn (fetch-count :test))]
-      (str
-        "Hello, " user "<br/>"
-        (if result "Added a new item!" "Failed to add a new item.")
-        "<br/>Total items: " total "."))))
+  [user]
+  (-> user book/all
+           view/list-all
+           view/user-wrap
+           render))
+
+(defn new
+  "Form for a new read"
+  [user]
+  (render (view/user-wrap (view/new))))
+
+(defn create
+  "Add new read"
+  ([read] (fn [user] (create user read)))
+  ([user read]
+    (book/create read user)
+    {:status 302 :headers {"Location" "/"}}))
