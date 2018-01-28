@@ -11,6 +11,7 @@
 
 (def salt
   "Read the hash salt from file"
+  (spit ".salt" "" :append true)
   (let [current-salt (trim (slurp ".salt"))]
     (if current-salt
       current-salt
