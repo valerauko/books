@@ -35,16 +35,16 @@ jobs:
       - checkout
       - run:
           name: "First copy the files"
-          command: scp -r . circleci@valerauko.net:books
+          command: scp -r . circleci@172.104.85.8:.
       - run:
           name: "Build Docker image"
-          command: ssh circleci@valerauko.net "cd ~/books; docker build -t books ."
-      # - run:
-      #     name: "Set up volumes and ports"
-      #     command: ssh circleci@valerauko.net "cd ~/books; docker run -itd --name books -v \"$(pwd)\":/var/www -v \"$(pwd)/data\":/data/db -p 1340:3000 books"
-      # - run:
-      #     name: "Finally start the server"
-      #     commend: ssh circleci@valerauko.net "cd ~/books; docker exec -it books lein run"
+          command: ssh circleci@172.104.85.8 "docker build -t books ."
+      - run:
+          name: "Set up volumes and ports"
+          command: ssh circleci@172.104.85.8 "docker run -id --name books -v \"$(pwd)\":/var/www -v \"$(pwd)/data\":/data/db -p 1340:3000 books lein install"
+      - run:
+          name: "Finally start the server"
+          commend: ssh circleci@172.104.85.8 "docker exec -i books lein ring server-headless"
 
 workflows:
   version: 2
