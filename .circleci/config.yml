@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: https://github.com/valerauko/books.git
+      - image: https://github.com/valerauko/books.git#work/automation
     working_directory: ~
 
     environment:
