@@ -37,11 +37,14 @@ jobs:
           name: "First copy the files"
           command: scp -r . circleci@valerauko.net:books
       - run:
-          name: "Then fire up Docker"
-          command: ssh circleci@valerauko.net "
-            docker build -t books .
-            docker run -itd --name books -v "$(pwd)":/var/www -v "$(pwd)/data":/data/db -p 1340:3000 books
-            docker exec -it books lein run"
+          name: "Build Docker image"
+          command: ssh circleci@valerauko.net "docker build -t books ."
+      - run:
+          name: "Set up volumes and ports"
+          command: ssh circleci@valerauko.net "docker run -itd --name books -v \"$(pwd)\":/var/www -v \"$(pwd)/data\":/data/db -p 1340:3000 books"
+      - run:
+          name: "Finally start the server"
+          commend: ssh circleci@valerauko.net "docker exec -it books lein run"
 
 workflows:
   version: 2
