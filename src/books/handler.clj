@@ -1,4 +1,5 @@
 (ns books.handler
+  (:gen-class)
   (:require [compojure.core :refer :all]
             [compojure.route :as route]
             [books.actions [books :as books]
