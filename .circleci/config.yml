@@ -48,7 +48,7 @@ jobs:
           command: scp target/books-0.0.1-standalone.jar circleci@172.104.85.8:.
       - run:
           name: "Finally start the server"
-          command: ssh circleci@172.104.85.8 "java -jar books-0.0.1-standalone.jar"
+          command: ssh circleci@172.104.85.8 "java -jar books-0.0.1-standalone.jar &"
 
 workflows:
   version: 2
