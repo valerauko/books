@@ -18,6 +18,7 @@ jobs:
       - run: |
           docker build -t books .
           docker run -itd --name books -v "$(pwd)":/var/www -v "$(pwd)/data":/data/db -p 1340:3000 books
+          docker exec -it books lein deps
       - save_cache:
           paths:
             - ~/.m2
