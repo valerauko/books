@@ -35,6 +35,7 @@ jobs:
     working_directory: ~/books
     steps:
       - checkout
+      - run: touch .salt
       - run:
           name: "Compile jar"
           command: lein ring uberjar
