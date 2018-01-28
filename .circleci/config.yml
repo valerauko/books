@@ -41,7 +41,7 @@ jobs:
           command: ssh circleci@172.104.85.8 "docker build -t books ."
       - run:
           name: "Set up volumes and ports"
-          command: ssh circleci@172.104.85.8 "docker run -id --name books -v \"$(pwd)\":/var/www -v \"$(pwd)/data\":/data/db -p 1340:3000 books lein install"
+          command: ssh circleci@172.104.85.8 "docker run -id --name books -v /home/circleci:/var/www -v /home/circleci/data:/data/db -p 1337:3000 books lein install"
       - run:
           name: "Finally start the server"
           commend: ssh circleci@172.104.85.8 "docker exec -i books lein ring server-headless"
