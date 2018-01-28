@@ -1,0 +1,52 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: clojure:alpine
+    working_directory: ~/books
+    environment:
+      LEIN_ROOT: "true"
+      # Customize the JVM maximum heap limit
+      JVM_OPTS: -Xmx3200m
+    steps:
+      - checkout
+      - run: apk update && apk upgrade && apk add mongodb
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "project.clj" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+      - run: lein deps
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: v1-dependencies-{{ checksum "project.clj" }}
+  test:
+    docker:
+      - image: clojure:alpine
+    steps:
+      - checkout
+      - run: lein test
+  deploy:
+    machine: true
+    working_directory: ~/books
+    steps:
+      - checkout
+      - run: scp . circleci@valerauko.net:books
+
+workflows:
+  version: 2
+  core_flow:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - deploy:
+          requires:
+            - test
+            - hold
+          filters:
+            branches:
+              only: master

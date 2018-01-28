@@ -6,7 +6,11 @@
 
 (def salt
   "Read the hash salt from file"
-  (trim (slurp ".salt")))
+  (let [current-salt (trim (slurp ".salt"))]
+    (if current-salt
+      current-salt
+      (spit ".salt" (generate-salt))
+      (salt))))
 
 (defn id-by-login
   [email pass]
@@ -15,3 +19,8 @@
       (fetch-one :users :where {
         :email email
         :pass (hashers/derive pass {:alg :pbkdf2+sha3-256 :salt salt})}))))
+
+(defn generate-salt
+  "Make a new salt for if there's none"
+  []
+  (reduce (fn [acc _] (str acc (char (+ (rand-int 94) 32)))) "" (range 512)))
