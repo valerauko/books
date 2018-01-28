@@ -1,7 +1,6 @@
 (ns books.core-test
-  (:require [clojure.test :refer :all]
-            [books.core :refer :all]))
+  (:require [clojure.test :refer :all]))
 
-(deftest a-test
-  (testing "FIXME, I fail."
-    (is (= 0 1))))
+(deftest dummy
+  (testing "No tests yet."
+    (is true)))
