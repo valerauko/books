@@ -31,7 +31,7 @@ jobs:
       - run: lein test
   deploy:
     docker:
-      - image: clojure:alpine
+      - image: clojure
     working_directory: ~/books
     steps:
       - checkout
