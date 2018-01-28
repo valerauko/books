@@ -17,10 +17,10 @@ jobs:
           - v1-dependencies-
       - run: |
           docker build -t books .
-          docker run -d --name books -v "$(pwd)":/var/www -v "$(pwd)/data":/data/db -p 1340:3000 books
+          docker run -itd --name books -v "$(pwd)":/var/www -v "$(pwd)/data":/data/db -p 1340:3000 books
       - save_cache:
           paths:
             - ~/.m2
           key: v1-dependencies-{{ checksum "project.clj" }}
       # run tests!
-      - run: docker exec books lein test
+      - run: docker exec -it books lein test
