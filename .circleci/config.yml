@@ -40,6 +40,10 @@ jobs:
           name: "Compile jar"
           command: lein ring uberjar
       - run:
+          name: Fix host authenticity for Linode
+          command: |
+            ssh-keyscan 172.104.85.8 >> ~/.ssh/known_hosts
+      - run:
           name: "Copy jar to server"
           command: scp target/target/books-0.0.1-standalone.jar circleci@172.104.85.8:.
       - run:
@@ -54,10 +58,6 @@ workflows:
       - test:
           requires:
             - build
-      - run:
-          name: Fix host authenticity for 172.104.85.8
-          command: |
-            ssh-keyscan 172.104.85.8 >> ~/.ssh/known_hosts
       - hold:
           type: approval
           requires:
