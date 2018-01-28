@@ -8,5 +8,6 @@ pom.xml.asc
 /.lein-*
 /.nrepl-port
 .hgignore
+.salt
 .hg/
 /data
