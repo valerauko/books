@@ -3,7 +3,7 @@ jobs:
   build:
     docker:
       - image: clojure:alpine
-    working_directory: /var/www
+    working_directory: ~/books
     environment:
       LEIN_ROOT: "true"
       # Customize the JVM maximum heap limit
@@ -28,6 +28,12 @@ jobs:
     steps:
       - checkout
       - run: lein test
+  deploy:
+    machine: true
+    working_directory: ~/books
+    steps:
+      - checkout
+      - run: scp . circleci@valerauko.net:books
 
 workflows:
   version: 2
@@ -37,9 +43,10 @@ workflows:
       - test:
           requires:
             - build
-      # - deploy:
-      #     requires:
-      #       - test
-      #     filters:
-      #       branches:
-      #         only: master
+      - deploy:
+          requires:
+            - test
+            - hold
+          filters:
+            branches:
+              only: master
