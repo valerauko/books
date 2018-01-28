@@ -33,7 +33,7 @@ jobs:
     working_directory: ~/books
     steps:
       - checkout
-      - run: scp . circleci@valerauko.net:books
+      - run: scp -r . circleci@valerauko.net:books
 
 workflows:
   version: 2
