@@ -11,13 +11,15 @@
 
 (def salt
   "Read the hash salt from file"
-  (spit ".salt" "" :append true)
-  (let [current-salt (trim (slurp ".salt"))]
+  (let [current-salt (try
+                       (trim (slurp ".salt"))
+                     (catch Exception e
+                       (spit ".salt" "")))]
     (if current-salt
       current-salt
       (do
         (spit ".salt" (generate-salt))
-        (salt)))))
+        salt))))
 
 (defn id-by-login
   [email pass]
