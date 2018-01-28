@@ -54,6 +54,10 @@ workflows:
       - test:
           requires:
             - build
+      - run:
+          name: Fix host authenticity for 172.104.85.8
+          command: |
+            ssh-keyscan 172.104.85.8 >> ~/.ssh/known_hosts
       - hold:
           type: approval
           requires:
