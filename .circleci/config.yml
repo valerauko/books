@@ -25,26 +25,30 @@ jobs:
   test:
     docker:
       - image: clojure:alpine
+    working_directory: ~/books
     steps:
       - checkout
       - run: lein test
   deploy:
-    machine: true
+    docker:
+      - image: clojure
     working_directory: ~/books
     steps:
       - checkout
+      - run: touch .salt
       - run:
-          name: "First copy the files"
-          command: scp -r . circleci@172.104.85.8:.
+          name: "Compile jar"
+          command: lein ring uberjar
       - run:
-          name: "Build Docker image"
-          command: ssh circleci@172.104.85.8 "docker build -t books ."
+          name: Fix host authenticity for Linode
+          command: |
+            ssh-keyscan 172.104.85.8 >> ~/.ssh/known_hosts
       - run:
-          name: "Set up volumes and ports"
-          command: ssh circleci@172.104.85.8 "docker run -id --name books -v /home/circleci:/var/www -v /home/circleci/data:/data/db -p 1337:3000 books lein install"
+          name: "Copy jar to server"
+          command: scp target/books-0.0.1-standalone.jar circleci@172.104.85.8:.
       - run:
           name: "Finally start the server"
-          command: ssh circleci@172.104.85.8 "docker exec -i books lein ring server-headless"
+          command: ssh circleci@172.104.85.8 "java -jar books-0.0.1-standalone.jar &"
 
 workflows:
   version: 2
@@ -58,6 +62,9 @@ workflows:
           type: approval
           requires:
             - test
+          filters:
+            branches:
+              only: master
       - deploy:
           requires:
             - hold
