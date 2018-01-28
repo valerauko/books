@@ -1,4 +1,4 @@
-(defproject books "0.0.1"
+(defproject books "0.1.0"
   :description "Vale reading"
   :url "https://valerauko.net/books"
   :license {:name "Eclipse Public License"
