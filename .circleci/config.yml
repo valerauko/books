@@ -44,7 +44,7 @@ jobs:
           command: ssh circleci@172.104.85.8 "docker run -id --name books -v /home/circleci:/var/www -v /home/circleci/data:/data/db -p 1337:3000 books lein install"
       - run:
           name: "Finally start the server"
-          commend: ssh circleci@172.104.85.8 "docker exec -i books lein ring server-headless"
+          command: ssh circleci@172.104.85.8 "docker exec -i books lein ring server-headless"
 
 workflows:
   version: 2
