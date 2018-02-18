@@ -29,4 +29,4 @@
   (route/not-found "oh fuck"))
 
 (def app
-  (wrap-defaults book-routes (assoc secure-site-defaults :proxy true)))
+  (wrap-defaults book-routes (assoc site-defaults :proxy true)))
