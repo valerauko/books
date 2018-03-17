@@ -12,7 +12,9 @@ jobs:
       - checkout
       - run: apk update && apk upgrade && apk add mongodb
       - run:
-          command: mongod
+          command: |
+            mkdir -p /data/db
+            mongod
           background: true
       # Download and cache dependencies
       - restore_cache:
