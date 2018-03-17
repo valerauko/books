@@ -4,6 +4,7 @@
             [compojure.route :as route]
             [ring.logger :refer [wrap-with-logger]]
             [books.actions [books :as books]
+                           [users :as users]
                            [session :as session]]
             [ring.middleware.defaults :refer :all]))
 
@@ -26,6 +27,12 @@
   (GET  "/logout"
     []
     (session/destroy))
+  (GET  "/register"
+    {{user :books} :session}
+    (users/new user))
+  (POST "/register"
+    {{email :email} :params}
+    (users/create email))
   (route/resources "/")
   (route/not-found "oh fuck"))
 
