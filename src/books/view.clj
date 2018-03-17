@@ -22,3 +22,12 @@
       [:body {:class "text-center"}
         [:h1 title]
         body])))
+
+(defn e404
+  "When uh-oh"
+  []
+  (render
+    '([:h2 "Not found!"]
+      [:p "Are you sure that's supposed to be here?"
+        [:br]
+        [:a {:class "nav-link" :href "/"} "Back to top"]])))
