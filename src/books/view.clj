@@ -2,11 +2,11 @@
   (:require [hiccup.page :refer [html5]]))
 
 (defn title
-  ([] "Vale reads")
+  ([] "Booklog")
   ([subtitle] (str subtitle " | " (title))))
 
 (defn render
-  ([body] (render "Vale reads" body))
+  ([body] (render (title) body))
   ([title body]
     (html5 {:lang "en"}
       [:head
