@@ -20,4 +20,7 @@
                        :placeholder "Password"
                        :required true}
                       :password)
-      (submit-button {:class "btn btn-lg btn-primary btn-block"} "Log in"))))
+      (submit-button {:class "btn btn-lg btn-primary btn-block"} "Log in")
+      [:nav {:class "nav nav-pills justify-content-center"}
+        [:a {:class "nav-link" :href "/register"} "Want in?"]
+        [:a {:class "nav-link text-secondary" :href "/reset"} "Forgot your password?"]])))
