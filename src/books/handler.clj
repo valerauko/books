@@ -2,6 +2,7 @@
   (:gen-class)
   (:require [compojure.core :refer :all]
             [compojure.route :as route]
+            [ring.logger :refer [wrap-with-logger]]
             [books.actions [books :as books]
                            [session :as session]]
             [ring.middleware.defaults :refer :all]))
@@ -29,4 +30,4 @@
   (route/not-found "oh fuck"))
 
 (def app
-  (wrap-defaults book-routes (assoc site-defaults :proxy true)))
+  (wrap-with-logger (wrap-defaults book-routes (assoc site-defaults :proxy true))))
