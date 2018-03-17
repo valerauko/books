@@ -15,3 +15,8 @@
   (testing "status 404 render"
     (let [response (app (mock/request :get "/invalid"))]
       (is (= (:status response) 404)))))
+
+(deftest resources
+  (testing "can retrieve resources"
+    (let [response (app (mock/request :get "/favicon.png"))]
+      (is (= (:status response) 200)))))
