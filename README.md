@@ -1,4 +1,4 @@
-# Books
+# Booklog
 
 A very basic Clojure script to track what I read.
 
