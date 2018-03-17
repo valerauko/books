@@ -8,7 +8,7 @@
     (let [response (app (mock/request :get "/"))]
       (is (= (:status response) 302))
       (is (=
-        (first (re-seq #"/login$" (get (:headers response) "Location")))
+        (re-find #"/login$" (get (:headers response) "Location"))
         "/login")))))
 
 (deftest not-found-route
