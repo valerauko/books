@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  test:
     docker:
       - image: clojure:alpine
     working_directory: ~/books
@@ -11,6 +11,11 @@ jobs:
     steps:
       - checkout
       - run: apk update && apk upgrade && apk add mongodb
+      - run:
+          command: |
+            mkdir -p /data/db
+            mongod
+          background: true
       # Download and cache dependencies
       - restore_cache:
           keys:
@@ -22,12 +27,6 @@ jobs:
           paths:
             - ~/.m2
           key: v1-dependencies-{{ checksum "project.clj" }}
-  test:
-    docker:
-      - image: clojure:alpine
-    working_directory: ~/books
-    steps:
-      - checkout
       - run: lein test
   deploy:
     docker:
@@ -58,10 +57,7 @@ workflows:
   version: 2
   core_flow:
     jobs:
-      - build
-      - test:
-          requires:
-            - build
+      - test
       - hold:
           type: approval
           requires:
