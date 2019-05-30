@@ -3,6 +3,7 @@ jobs:
   test:
     docker:
       - image: clojure:alpine
+      - image: mongo:3.6-xenial
     working_directory: ~/books
     environment:
       LEIN_ROOT: "true"
@@ -10,12 +11,6 @@ jobs:
       JVM_OPTS: -Xmx3200m
     steps:
       - checkout
-      - run: apk update && apk upgrade && apk add mongodb
-      - run:
-          command: |
-            mkdir -p /data/db
-            mongod
-          background: true
       # Download and cache dependencies
       - restore_cache:
           keys:
