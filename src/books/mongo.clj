@@ -2,6 +2,4 @@
   (:require [somnium.congomongo :refer :all]))
 
 (def conn
-  (make-connection
-    "local"
-    :instances [{:host "mongo-db" :port 27017}]))
+  (make-connection (System/getenv "MONGO_URL")))

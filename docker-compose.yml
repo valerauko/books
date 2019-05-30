@@ -7,6 +7,8 @@ services:
       - .:/root
     ports:
       - 3000:3000
+    environment:
+      MONGO_URL: mongodb://mongo-db/local
     depends_on:
       - mongo-db
     command: lein ring server-headless 3000
