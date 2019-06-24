@@ -1,0 +1,19 @@
+version: '3'
+services:
+  web:
+    image: clojure:lein-alpine
+    working_dir: /root
+    volumes:
+      - .:/root
+    ports:
+      - 3000:3000
+    environment:
+      MONGO_URL: mongodb://mongo-db/local
+    depends_on:
+      - mongo-db
+    command: lein ring server-headless 3000
+
+  mongo-db:
+    image: mongo:3.6-xenial
+    volumes:
+      - ./data:/data/db
