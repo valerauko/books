@@ -46,7 +46,7 @@ jobs:
             - target/books-[0-9].[0-9].[0-9].jar
 
   docker-push:
-    executor: machine
+    machine: true
     steps:
       - checkout
       - attach_workspace
