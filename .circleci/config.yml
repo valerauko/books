@@ -53,6 +53,7 @@ jobs:
       - attach_workspace:
           at: .
       - set-version
+      - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
       - run: docker build --build-arg BOOKS_VERSION=$BOOKS_VERSION -t valerauko/books:$BOOKS_VERSION .
       - run: docker push valerauko/books:$BOOKS_VERSION
 
@@ -67,16 +68,9 @@ workflows:
           # filters:
           #   branches:
           #     only: master
-      - hold:
-          type: approval
-          requires:
-            - build
-          # filters:
-          #   branches:
-          #     only: master
       - docker-push:
           requires:
-            - hold
+            - build
           # filters:
           #   branches:
           #     only: master
