@@ -42,6 +42,7 @@ jobs:
       - lein-deps
       - run: lein uberjar
       - persist_to_workspace:
+          root: .
           paths:
             - target/books-[0-9].[0-9].[0-9].jar
 
@@ -49,7 +50,8 @@ jobs:
     machine: true
     steps:
       - checkout
-      - attach_workspace
+      - attach_workspace:
+          at: .
       - set-version
       - setup_remote_docker
       - run: docker build -t valerauko/books:$BOOKS_VERSION .
