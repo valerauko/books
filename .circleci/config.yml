@@ -53,8 +53,8 @@ jobs:
       - attach_workspace:
           at: .
       - set-version
-      - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
       - run: docker build --build-arg BOOKS_VERSION=$BOOKS_VERSION -t valerauko/books:$BOOKS_VERSION .
+      - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
       - run: docker push valerauko/books:$BOOKS_VERSION
 
 workflows:
