@@ -63,19 +63,19 @@ workflows:
       - build:
           requires:
             - test
-          filters:
-            branches:
-              only: master
+          # filters:
+          #   branches:
+          #     only: master
       - hold:
           type: approval
           requires:
             - build
-          filters:
-            branches:
-              only: master
+          # filters:
+          #   branches:
+          #     only: master
       - docker-push:
           requires:
             - hold
-          filters:
-            branches:
-              only: master
+          # filters:
+          #   branches:
+          #     only: master
