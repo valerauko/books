@@ -2,10 +2,12 @@
   (:gen-class)
   (:require [compojure.core :refer :all]
             [compojure.route :as route]
+            [mount.core :as mount :refer [defstate]]
             [ring.logger :refer [wrap-with-logger]]
             [books.actions [books :as books]
                            [session :as session]]
-            [ring.middleware.defaults :refer :all]))
+            [ring.middleware.defaults :refer :all]
+            [ring.adapter.jetty :refer [run-jetty]]))
 
 (defroutes book-routes
   (GET  "/"
@@ -29,5 +31,14 @@
   (route/resources "/")
   (route/not-found "oh fuck"))
 
-(def app
+(def handler
   (wrap-with-logger (wrap-defaults book-routes (assoc site-defaults :proxy true))))
+
+(defstate http-server
+  :start
+    (run-jetty handler {:port (or (System/getenv "BOOKS_PORT") 3000)
+                        :host (or (System/getenv "BOOKS_HOST") "0.0.0.0")
+                        :send-server-version? false}))
+
+(defn -main [& _args]
+  (mount/start))
