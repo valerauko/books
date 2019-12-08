@@ -1,8 +1,9 @@
-FROM clojure:alpine
-LABEL maintainer="vale@valerauko.net"
+FROM openjdk:13-alpine
 
-RUN apk update && apk add mongodb
+WORKDIR /usr/local/books
+ARG BOOKS_VERSION
+ENV BOOKS_VERSION $BOOKS_VERSION
 
-WORKDIR /var/www
+ADD ./target/books-$BOOKS_VERSION.jar .
 
-CMD mongod
+CMD java -jar books-$BOOKS_VERSION.jar

@@ -1,5 +1,9 @@
 (ns books.mongo
-  (:require [somnium.congomongo :refer :all]))
+  (:require [somnium.congomongo :refer :all]
+            [mount.core :refer [defstate]]))
 
-(def conn
-  (make-connection "local"))
+(defstate conn
+  :start
+    (make-connection (System/getenv "MONGO_URL"))
+  :stop
+    (close-connection conn))

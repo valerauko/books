@@ -1,73 +1,77 @@
-version: 2
-jobs:
-  test:
+version: 2.1
+
+executors:
+  tester:
     docker:
-      - image: clojure:alpine
+      - image: clojure:lein-alpine
+      - image: mongo:3.6-xenial
     working_directory: ~/books
     environment:
       LEIN_ROOT: "true"
-      # Customize the JVM maximum heap limit
+      MONGO_URL: mongodb://localhost/local
       JVM_OPTS: -Xmx3200m
+
+commands:
+  lein-deps:
     steps:
-      - checkout
-      - run: apk update && apk upgrade && apk add mongodb
-      - run:
-          command: |
-            mkdir -p /data/db
-            mongod
-          background: true
-      # Download and cache dependencies
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "project.clj" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
       - run: lein deps
       - save_cache:
           paths:
             - ~/.m2
           key: v1-dependencies-{{ checksum "project.clj" }}
-      - run: lein test
-  deploy:
-    docker:
-      - image: clojure
-    working_directory: ~/books
+  set-version:
+    steps:
+      - run: echo "export BOOKS_VERSION=$(head -n 1 project.clj | tr -cd '[[:digit:]\.]')" >> $BASH_ENV
+
+jobs:
+  test:
+    executor: tester
     steps:
       - checkout
-      - run: touch .salt
-      - run:
-          name: "Compile jar"
-          command: lein ring uberjar
-      - run:
-          name: Fix host authenticity for Linode
-          command: |
-            ssh-keyscan 172.104.85.8 >> ~/.ssh/known_hosts
-      - run:
-          name: "Copy jar to server"
-          command: scp target/books-0.1.0-standalone.jar circleci@172.104.85.8:.
-      - run:
-          name: "Finally start the server"
-          command: ssh circleci@172.104.85.8 "pkill java; java -jar books-0.1.0-standalone.jar"
-          background: true
-      - run:
-          name: "Keep connection open long enough to start the server"
-          command: sleep 60
+      - lein-deps
+      - run: lein test
+
+  build:
+    docker:
+      - image: clojure:lein-alpine
+    steps:
+      - checkout
+      - lein-deps
+      - run: lein uberjar
+      - persist_to_workspace:
+          root: .
+          paths:
+            - Dockerfile
+            - project.clj
+            - target/books-[0-9].[0-9].[0-9].jar
+
+  docker-push:
+    machine: true
+    steps:
+      - attach_workspace:
+          at: .
+      - set-version
+      - run: docker build --build-arg BOOKS_VERSION=$BOOKS_VERSION -t valerauko/books:$BOOKS_VERSION .
+      - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
+      - run: docker push valerauko/books:$BOOKS_VERSION
 
 workflows:
   version: 2
   core_flow:
     jobs:
       - test
-      - hold:
-          type: approval
+      - build:
           requires:
             - test
           filters:
             branches:
               only: master
-      - deploy:
+      - docker-push:
           requires:
-            - hold
+            - build
           filters:
             branches:
               only: master
