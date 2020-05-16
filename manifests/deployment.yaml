@@ -23,7 +23,7 @@ spec:
         image: valerauko/books:0.1.4
         resources:
           limits:
-            memory: "128Mi"
+            memory: "256Mi"
           requests:
             memory: "64Mi"
         volumeMounts:
