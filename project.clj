@@ -1,4 +1,4 @@
-(defproject books "0.1.4"
+(defproject books "0.1.5"
   :description "Clojure app to track what you read"
   :url "https://books.valerauko.net"
   :license {:name "Eclipse Public License"
