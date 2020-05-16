@@ -43,6 +43,8 @@ spec:
         ports:
         - name: data
           containerPort: 27017
+        env:
+          MONGO_INITDB_DATABASE: books
       volumes:
       - name: mongodb-storage
         persistentVolumeClaim:
