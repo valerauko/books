@@ -23,9 +23,9 @@ spec:
         image: valerauko/books:0.1.4
         resources:
           limits:
-            memory: "128m"
+            memory: "128Mi"
           requests:
-            memory: "64m"
+            memory: "64Mi"
         volumeMounts:
         - name: books-secret-volume
           readOnly: true
