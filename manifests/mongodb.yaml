@@ -1,0 +1,67 @@
+# pvc
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: mongodb-storage
+  labels:
+    app: books
+    role: storage
+spec:
+  accessModes:
+  - "ReadWriteOnce"
+  resources:
+    requests:
+      storage: "1Gi"
+
+---
+# deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb
+  labels:
+    app: books
+    role: database
+spec:
+  selector:
+    matchLabels:
+      app: books
+      role: database
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: books
+        role: database
+    spec:
+      containers:
+      - name: mongodb
+        image: mongodb:3.6-xenial
+        volumeMounts:
+        - mountPath: /data/db
+          name: mongodb-storage
+        ports:
+        - name: data
+          containerPort: 27017
+      volumes:
+      - name: mongodb-storage
+        persistentVolumeClaim:
+          claimName: mongodb-storage
+
+---
+# service
+kind: Service
+apiVersion: v1
+metadata:
+  name: mongodb
+  labels:
+    app: books
+    role: database
+spec:
+  selector:
+    app: books
+    role: database
+  ports:
+  - name: data
+    port: 27017
+    targetPort: data

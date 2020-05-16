@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: books
+  labels:
+    app: books
+spec:
+  selector:
+    matchLabels:
+      app: books
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: books
+    spec:
+      hostAliases:
+      - ip: "127.0.0.1"
+        hostnames:
+        - "status.localhost"
+      containers:
+      - name: books
+        image: valerauko/books:0.1.4
+        resources:
+          limits:
+            memory: "128m"
+          requests:
+            memory: "64m"
+        volumeMounts:
+        - name: books-secret-volume
+          readOnly: true
+          mountPath: /usr/local/books/.salt
+          subPath: .salt
+        env:
+        - name: MONGO_URL
+          valueFrom:
+            secretKeyRef:
+              name: books-mongo
+              key: db-url
+        - name: JVM_OPTS
+          value: "-Xmx64m"
+        ports:
+        - name: http
+          containerPort: 3000
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          failureThreshold: 6
+          initialDelaySeconds: 90
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          failureThreshold: 6
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 5
+      volumes:
+      - name: books-secret-volume
+        secret:
+          secretName: books-salt
+          items:
+            - key: salt
+              path: ".salt"

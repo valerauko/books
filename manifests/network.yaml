@@ -1,0 +1,36 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: books
+  labels:
+    app: books
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+spec:
+  rules:
+  - host: books.dekiru.tech # books.valerauko.net
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: books-service
+          servicePort: http
+  tls:
+    - hosts:
+      - books.dekiru.tech # books.valerauko.net
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: books-service
+  labels:
+    app: books
+spec:
+  selector:
+    app: books
+  ports:
+  - name: http
+    port: 80
+    targetPort: 3000
