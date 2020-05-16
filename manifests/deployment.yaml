@@ -47,7 +47,7 @@ spec:
             path: /
             port: http
           failureThreshold: 6
-          initialDelaySeconds: 90
+          initialDelaySeconds: 30
           periodSeconds: 30
           successThreshold: 1
           timeoutSeconds: 5
@@ -56,7 +56,7 @@ spec:
             path: /
             port: http
           failureThreshold: 6
-          initialDelaySeconds: 60
+          initialDelaySeconds: 15
           periodSeconds: 30
           successThreshold: 1
           timeoutSeconds: 5
