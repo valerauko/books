@@ -36,7 +36,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: books-mongo
-              key: db-url
+              key: MONGO_URL
         - name: JVM_OPTS
           value: "-Xmx64m"
         ports:

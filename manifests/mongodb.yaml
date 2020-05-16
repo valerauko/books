@@ -44,7 +44,22 @@ spec:
         - name: data
           containerPort: 27017
         env:
-          MONGO_INITDB_DATABASE: books
+        # TODO: figure out how to make the app connect as not root...
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: books-mongo
+              key: MONGODB_USERNAME
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: books-mongo
+              key: MONGODB_PASSWORD
+        - name: MONGO_INITDB_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: books-mongo
+              key: MONGODB_DATABASE
       volumes:
       - name: mongodb-storage
         persistentVolumeClaim:
