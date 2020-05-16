@@ -12,3 +12,4 @@ pom.xml.asc
 .hg/
 /data
 /.m2
+*.raw.yaml
