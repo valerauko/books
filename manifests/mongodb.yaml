@@ -36,7 +36,7 @@ spec:
     spec:
       containers:
       - name: mongodb
-        image: mongodb:3.6-xenial
+        image: mongo:3.6-xenial
         volumeMounts:
         - mountPath: /data/db
           name: mongodb-storage
